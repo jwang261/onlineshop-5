@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: onlineshop-coupon
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 638df1b4-4a22-4bcb-8952-c6acb8fdb5ad
+        group: dev
+        ext-config[0].data-id: datasource.yml
+        ext-config[0].group: dev
+        ext-config[0].refresh: true
+        ext-config[1].data-id: mybatis.yml
+        ext-config[1].group: dev
+        ext-config[1].refresh: true
+        ext-config[2].data-id: others.yml
+        ext-config[2].group: dev
+        ext-config[2].refresh: true

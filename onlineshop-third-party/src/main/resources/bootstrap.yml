@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: f26505c1-4338-484b-83f6-69a1007fc587
+        ext-config[0].data-id: oos.yml
+        ext-config[0].group: DEFAULT_GROUP
+        ext-config[0].refresh: true
+
+

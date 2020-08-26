@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: onlineshop-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: ad1525da-29a0-416d-aeaf-6cd16f0ee1af
