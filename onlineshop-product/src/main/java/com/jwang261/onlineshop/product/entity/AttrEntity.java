@@ -1,5 +1,6 @@
 package com.jwang261.onlineshop.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -18,6 +19,8 @@ import lombok.Data;
 @TableName("pms_attr")
 public class AttrEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+
 
 	/**
 	 * $column.comments
@@ -56,5 +59,8 @@ public class AttrEntity implements Serializable {
 	 * $column.comments
 	 */
 	private Integer showDesc;
+
+//	@TableField(exist = false)
+//	private Long attrGroup;
 
 }

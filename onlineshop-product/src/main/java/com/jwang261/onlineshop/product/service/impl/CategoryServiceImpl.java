@@ -1,8 +1,10 @@
 package com.jwang261.onlineshop.product.service.impl;
 
+import com.jwang261.onlineshop.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,12 +18,14 @@ import com.jwang261.common.utils.Query;
 import com.jwang261.onlineshop.product.dao.CategoryDao;
 import com.jwang261.onlineshop.product.entity.CategoryEntity;
 import com.jwang261.onlineshop.product.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
 
-
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -60,6 +64,32 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //逻辑删除
 
         baseMapper.deleteBatchIds(asList);
+    }
+
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        List<Long> paths = new ArrayList<>();
+
+        findParentPath(catelogId, paths);
+
+        return paths.toArray(new Long[paths.size()]);
+    }
+
+    @Override
+    @Transactional
+    public void updateCascade(CategoryEntity category) {
+        this.updateById(category);
+        categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
+    }
+
+    private List<Long> findParentPath(Long catelogId, List<Long> paths){
+        paths.add(0, catelogId);
+        CategoryEntity byId = this.getById(catelogId);
+        if(byId.getParentCid() != 0){
+
+            findParentPath(byId.getParentCid(), paths);
+        }
+        return paths;
     }
 
     private List<CategoryEntity> getChildren(CategoryEntity root, List<CategoryEntity> all){

@@ -21,3 +21,6 @@ mybatis-plus:
       logic-not-delete-value: 1
 server:
   port: 10000
+logging:
+  level:
+    com.jwang261.onlineshop: debug

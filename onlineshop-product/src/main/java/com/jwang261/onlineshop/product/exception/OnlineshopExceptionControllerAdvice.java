@@ -33,6 +33,7 @@ public class OnlineshopExceptionControllerAdvice {
     }
     @ExceptionHandler(value = Throwable.class)
     public R handleException(Throwable throwable){
+        System.out.println(throwable.getMessage());
         return R.error(BizCodeEnum.UNKNOWN_EXCEPTION.getCode(), BizCodeEnum.UNKNOWN_EXCEPTION.getMsg());
     }
 }
