@@ -32,10 +32,12 @@ public class WareSkuController {
 
     /**
      * 列表
+     * skuId: 1
+     * wareId: 2
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wareSkuService.queryPage(params);
+        PageUtils page = wareSkuService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
     }

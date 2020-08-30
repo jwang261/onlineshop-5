@@ -21,6 +21,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.jwang261.onlineshop</groupId>
             <artifactId>onlineshop-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>

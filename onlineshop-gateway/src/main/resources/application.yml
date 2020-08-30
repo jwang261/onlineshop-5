@@ -19,6 +19,13 @@ spring:
           predicates:
             - Path=/api/product/**
           filters:
+            - RewritePath=/api/product/(?<segment>.*),/product/$\{segment}
+
+        - id: product_route
+          uri: lb://onlineshop-ware
+          predicates:
+            - Path=/api/ware/**
+          filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
         - id: third_party_route
@@ -34,7 +41,7 @@ spring:
           predicates:
             - Path=/api/member/**
           filters:
-            - RewritePath=/api/(?<segment>.*),/$\{segment}
+            - RewritePath=/api/member/(?<segment>.*),/member/$\{segment}
 
         - id: admin_route
           uri: lb://renren-fast

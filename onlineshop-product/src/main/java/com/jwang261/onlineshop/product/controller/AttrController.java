@@ -1,8 +1,11 @@
 package com.jwang261.onlineshop.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import com.jwang261.onlineshop.product.entity.ProductAttrValueEntity;
+import com.jwang261.onlineshop.product.service.ProductAttrValueService;
 import com.jwang261.onlineshop.product.vo.AttrRespVo;
 import com.jwang261.onlineshop.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,17 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
+
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrListForSpu(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueEntity> productAttrValueEntities = productAttrValueService.baseAttrListForSpu(spuId);
+        for (ProductAttrValueEntity productAttrValueEntity : productAttrValueEntities) {
+            System.out.println(productAttrValueEntity);
+        }
+        return R.ok().put("data", productAttrValueEntities);
+    }
 
     @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,
