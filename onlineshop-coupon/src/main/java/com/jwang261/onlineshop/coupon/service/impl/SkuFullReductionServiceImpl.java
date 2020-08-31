@@ -1,6 +1,6 @@
 package com.jwang261.onlineshop.coupon.service.impl;
 
-import com.jwang261.common.to.MemberPrice;
+import com.jwang261.common.to.es.MemberPrice;
 import com.jwang261.common.to.SkuReductionTo;
 import com.jwang261.onlineshop.coupon.entity.MemberPriceEntity;
 import com.jwang261.onlineshop.coupon.entity.SkuLadderEntity;

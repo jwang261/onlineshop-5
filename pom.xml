@@ -13,7 +13,7 @@
     <artifactId>onlineshop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>onlineshop</name>
-    <description>coupon</description>
+    <description>Main</description>
     <modules>
         <module>onlineshop-coupon</module>
         <module>onlineshop-member</module>
@@ -23,6 +23,7 @@
         <module>renren-fast</module>
         <module>renren-generator</module>
         <module>onlineshop-common</module>
+        <module>onlineshop-gateway</module>
     </modules>
 
     <properties>

@@ -1,5 +1,6 @@
 package com.jwang261.common.to;
 
+import com.jwang261.common.to.es.MemberPrice;
 import lombok.Data;
 
 import java.math.BigDecimal;
