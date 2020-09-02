@@ -8,7 +8,9 @@ package com.jwang261.common.exception;
 public enum BizCodeEnum {
 
     UNKNOWN_EXCEPTION(10000, "Unknown Exception"),
-    VALID_EXCEPTION(10001, "Not Valid Argument");
+    VALID_EXCEPTION(10001, "Not Valid Argument"),
+    PRODUCT_UP_EXCEPTION(11000, "Product Up Exception");
+
 
     private int code;
     private String msg;

@@ -1,14 +1,12 @@
-package com.jwang261.onlineshop.product.controller;
+package com.jwang261.onlineshop.product.app;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.jwang261.common.valid.AddGroup;
 import com.jwang261.common.valid.UpdateGroup;
 import com.jwang261.common.valid.UpdateStatusGroup;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +18,6 @@ import com.jwang261.onlineshop.product.entity.BrandEntity;
 import com.jwang261.onlineshop.product.service.BrandService;
 import com.jwang261.common.utils.PageUtils;
 import com.jwang261.common.utils.R;
-
-import javax.validation.Valid;
 
 
 /**

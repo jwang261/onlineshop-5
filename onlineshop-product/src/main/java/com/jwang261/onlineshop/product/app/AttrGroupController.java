@@ -1,4 +1,4 @@
-package com.jwang261.onlineshop.product.controller;
+package com.jwang261.onlineshop.product.app;
 
 import java.util.Arrays;
 import java.util.List;

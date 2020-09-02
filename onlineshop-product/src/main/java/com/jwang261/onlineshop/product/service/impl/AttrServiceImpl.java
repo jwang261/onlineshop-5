@@ -268,4 +268,15 @@ public class  AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implement
 
     }
 
+    /**
+     * 在指定的所有属性集合里面挑出可检索属性
+     * @param attrIds
+     * @return
+     */
+    @Override
+    public List<Long> selectSearchableAttrIds(List<Long> attrIds) {
+        return this.baseMapper.selectSearchableAttrIds(attrIds);
+
+    }
+
 }

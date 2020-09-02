@@ -1,4 +1,4 @@
-package com.jwang261.onlineshop.product.controller;
+package com.jwang261.onlineshop.product.app;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ import com.jwang261.onlineshop.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.jwang261.onlineshop.product.entity.AttrEntity;
 import com.jwang261.onlineshop.product.service.AttrService;
 import com.jwang261.common.utils.PageUtils;
 import com.jwang261.common.utils.R;
