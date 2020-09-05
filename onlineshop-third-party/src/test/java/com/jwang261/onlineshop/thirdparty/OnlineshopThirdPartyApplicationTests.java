@@ -17,11 +17,11 @@ import java.net.URL;
 @SpringBootTest
 class OnlineshopThirdPartyApplicationTests {
 
-    public final static String ROOT_ACCESS_KEY_ID = "AKIAJ7M5VNWQ64A3LM7A";
-    public final static String ROOT_SECRET_ACCESS_KEY = "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";
+    public final static String ROOT_ACCESS_KEY_ID = "";
+    public final static String ROOT_SECRET_ACCESS_KEY = "";
 
-    public final static String ACCESS_KEY_ID = "AKIAUUPELXEH3OA2LSOI";
-    public final static String SECRET_ACCESS_KEY = "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";
+    public final static String ACCESS_KEY_ID = "";
+    public final static String SECRET_ACCESS_KEY = "";
 
     public static AmazonS3 s3Client;
 
