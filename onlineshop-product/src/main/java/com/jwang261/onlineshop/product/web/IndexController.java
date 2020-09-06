@@ -3,6 +3,8 @@ package com.jwang261.onlineshop.product.web;
 import com.jwang261.onlineshop.product.entity.CategoryEntity;
 import com.jwang261.onlineshop.product.service.CategoryService;
 import com.jwang261.onlineshop.product.vo.Catalog2Vo;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,8 @@ public class IndexController {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    RedissonClient redisson;
     @GetMapping({"/", "index.html"})
     public String indexPage(Model model){
         List<CategoryEntity> categoryEntities = categoryService.getLevel1Categories();
@@ -38,6 +42,18 @@ public class IndexController {
     @GetMapping("/hello")
     @ResponseBody
     public String hello(){
+        RLock lock = redisson.getLock("my-lock");
+
+        lock.lock();
+        try {
+            System.out.println("枷锁");
+            Thread.sleep(30000);
+        }catch (Exception e){
+
+        }finally {
+            lock.unlock();
+            System.out.println("释放");
+        }
         return "hello";
     }
 }

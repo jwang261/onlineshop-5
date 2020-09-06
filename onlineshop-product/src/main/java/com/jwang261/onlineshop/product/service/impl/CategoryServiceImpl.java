@@ -5,6 +5,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.jwang261.onlineshop.product.service.CategoryBrandRelationService;
 import com.jwang261.onlineshop.product.vo.Catalog2Vo;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,6 +38,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     StringRedisTemplate redisTemplate;
+
+    @Autowired
+    RedissonClient redisson;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -122,13 +127,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return result;
     }
 
-    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedisLock()  {
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedisLock() {
 
         //
         String uuid = UUID.randomUUID().toString();
         //atomic lock
-        Boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uuid,10,TimeUnit.SECONDS);
-        if(lock){
+        Boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uuid, 10, TimeUnit.SECONDS);
+        if (lock) {
             System.out.println("get distributed lock succeed");
             Map<String, List<Catalog2Vo>> dataFromDB;
             try {
@@ -152,7 +157,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 //            }
             // Use Lua Script
             return dataFromDB;
-        }else{
+        } else {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -163,6 +168,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
             return getCatalogJsonFromDBWithRedisLock();
         }
+
+
+    }
+
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDBWithRedissonLock() {
+
+
+        //
+        RLock lock = redisson.getLock("CatalogJson-lock");
+        lock.lock();
+
+        Map<String, List<Catalog2Vo>> dataFromDB;
+        try {
+            dataFromDB = getDataFromDB();
+        } finally {
+
+            lock.unlock();
+        }
+
+        return dataFromDB;
 
 
     }
