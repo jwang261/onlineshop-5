@@ -55,7 +55,7 @@ spring:
         - id: onlineshop_host_route
           uri: lb://onlineshop-product
           predicates:
-            - Host=jwang261-shop.com
+            - Host=jwang261-shop.com, item.jwang261-shop.com
 
         - id: onlineshop_search_route
           uri: lb://onlineshop-search

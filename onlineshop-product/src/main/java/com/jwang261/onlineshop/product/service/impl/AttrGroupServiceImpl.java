@@ -3,6 +3,8 @@ package com.jwang261.onlineshop.product.service.impl;
 import com.jwang261.onlineshop.product.entity.AttrEntity;
 import com.jwang261.onlineshop.product.service.AttrService;
 import com.jwang261.onlineshop.product.vo.AttrGroupWithAttrsVo;
+import com.jwang261.onlineshop.product.vo.SkuItemVo;
+import com.jwang261.onlineshop.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +96,14 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
 
         return collect;
+    }
+
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        //1.查处当前spu对应的所有属性的分组信息以及当前分组下所有属性对应的值
+        AttrGroupDao baseMapper = this.getBaseMapper();
+        List<SpuItemAttrGroupVo> vos = baseMapper.getAttrGroupWithAttrsBySpuId(spuId,  catalogId);
+        return vos;
     }
 
 }

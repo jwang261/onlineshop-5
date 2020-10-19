@@ -140,7 +140,7 @@ public class ShopSearchServiceImpl implements ShopSearchService {
             catalogVo.setCatalogId(Long.parseLong(keyAsString));
 
             //2. get catalogName
-            ParsedLongTerms catalog_name_agg = bucket.getAggregations().get("catalog_name_agg");
+            ParsedStringTerms catalog_name_agg = bucket.getAggregations().get("catalog_name_agg");
             String catalog_name = catalog_name_agg.getBuckets().get(0).getKeyAsString();
             catalogVo.setCatalogName(catalog_name);
             catalogVos.add(catalogVo);

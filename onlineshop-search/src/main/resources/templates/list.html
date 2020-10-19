@@ -1063,11 +1063,13 @@
                     <!--综合排序-->
                     <div class="filter_top">
                         <div class="filter_top_left">
-                            <a href="/static/search/#">综合排序</a>
-                            <a href="/static/search/#">销量</a>
-                            <a href="/static/search/#">价格</a>
-                            <a href="/static/search/#">评论分</a>
-                            <a href="/static/search/#">上架时间</a>
+                            <a class="sort_a" sort="hotScore" href="/static/search/#">综合排序</a>
+                            <a class="sort_a" sort="saleCount" href="/static/search/#">销量</a>
+                            <a class="sort_a" sort="skuPrice" href="/static/search/#">价格</a>
+                            <a class="sort_a" href="/static/search/#">评论分</a>
+                            <a class="sort_a" href="/static/search/#">上架时间</a>
+                            <input id="skuPriceFrom" type="number" style="width: 100px;margin-left: 30px;" th:value="${#strings.isEmpty(priceRange)?'':#strings.substringBefore(priceRange,'_')}"><!--189.6.50上面还需要写内容--> -
+                            <input id="skuPriceTo" type="number" style="width: 100px;" th:value="${#strings.isEmpty(priceRange)?'':#strings.substringAfter(priceRange,'_')}"> <button id="skuPriceSearchBtn">确定</button>
                         </div>
                         <div class="filter_top_right">
                             <span class="fp-text">
@@ -1095,32 +1097,7 @@
                                 </ul>
                                 <div id="container">
                                     <div id="content1" style="z-index: 1;">
-                                        <a href="/static/search/#">北京</a>
-                                        <a href="/static/search/#">上海</a>
-                                        <a href="/static/search/#">天津</a>
-                                        <a href="/static/search/#">重庆</a>
-                                        <a href="/static/search/#">河北</a>
-                                        <a href="/static/search/#">山西</a>
-                                        <a href="/static/search/#">河南</a>
-                                        <a href="/static/search/#">辽宁</a>
-                                        <a href="/static/search/#">吉林</a>
-                                        <a href="/static/search/#">黑龙江</a>
-                                        <a href="/static/search/#">内蒙古</a>
-                                        <a href="/static/search/#">江苏</a>
-                                        <a href="/static/search/#">山东</a>
-                                        <a href="/static/search/#">安徽</a>
-                                        <a href="/static/search/#">浙江</a>
-                                        <a href="/static/search/#">福建</a>
-                                        <a href="/static/search/#">湖北</a>
-                                        <a href="/static/search/#">湖南</a>
-                                        <a href="/static/search/#">广东</a>
-                                        <a href="/static/search/#">广西</a>
-                                        <a href="/static/search/#">江西</a>
-                                        <a href="/static/search/#">四川</a>
-                                        <a href="/static/search/#">海南</a>
-                                        <a href="/static/search/#">贵州</a>
-                                        <a href="/static/search/#">云南</a>
-                                        <a href="/static/search/#">西藏</a>
+
                                         <a href="/static/search/#">陕西</a>
                                         <a href="/static/search/#">甘肃</a>
                                         <a href="/static/search/#">青海</a>
@@ -1136,10 +1113,7 @@
                                         <a href="/static/search/#">朝阳区</a>
                                         <a href="/static/search/#">海淀区</a>
                                         <a href="/static/search/#">西城区</a>
-                                        <a href="/static/search/#">东城区</a>
-                                        <a href="/static/search/#">大兴区</a>
-                                        <a href="/static/search/#">丰台区</a>
-                                        <a href="/static/search/#">昌平区</a>
+
                                         <a href="/static/search/#">顺义区</a>
 
                                     </div>
@@ -1147,10 +1121,6 @@
                                         <a href="/static/search/#">三环以内</a>
                                         <a href="/static/search/#">管庄</a>
                                         <a href="/static/search/#">北苑</a>
-                                        <a href="/static/search/#">定福庄</a>
-                                        <a href="/static/search/#">三环到四环之间</a>
-                                        <a href="/static/search/#">四环到五环之间</a>
-                                        <a href="/static/search/#">五环到六环之间</a>
                                     </div>
                                 </div>
                             </div>
@@ -1175,8 +1145,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/static/search/#">
-                                        <i></i>
+                                    <a href="java" th:with="check=${param.hasStock}">
+                                        <input id="showHasStock" type="checkbox" th:checked="${#strings.equals(param.hasStock, '1')}">
                                         仅显示有货
                                     </a>
                                 </li>
@@ -1192,25 +1162,17 @@
                     </div>
                     <!--排序内容-->
                     <div class="rig_tab">
-                        <div>
+                        <div th:each="product: ${result.getProducts()}">
                             <div class="ico">
                                 <i class="iconfont icon-weiguanzhu"></i>
                                 <a href="/static/search/#">关注</a>
                             </div>
                             <p class="da">
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
-                                    <img src="/static/search/img/57d0d400Nfd249af4.jpg" class="dim">
+                                <a th:href="|http://item.jwang261-shop.com/${product.skuId}.html|" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
+                                    <img th:src="${product.skuImg}" class="dim">
                                 </a>
                             </p>
                             <ul class="tab_im">
-                                <li><a href="/static/search/#" title="黑色">
-                                    <img src="/static/search/img/57d0d400Nfd249af4.jpg"></a></li>
-                                <li><a href="/static/search/#" title="粉色">
-                                    <img src="/static/search/img/57d11c33N5cd57490.jpg"></a></li>
-                                <li><a href="/static/search/#" title="粉色">
-                                    <img src="/static/search/img/57d11b9cNad700eeb.jpg"></a></li>
-                                <li><a href="/static/search/#" title="红色">
-                                    <img src="/static/search/img/58d1d078N20e18b62.jpg"></a></li>
                                 <li><a href="/static/search/#" title="黑色">
                                     <img src="/static/search/img/57d11b6cN1fd1194d.jpg"></a></li>
                                 <li><a href="/static/search/#" title="白色">
@@ -1220,29 +1182,15 @@
                                 <span>¥5199.00</span>
                                 <span>¥5199.00</span>
                                 <span>¥5199.00</span>
-                                <span>¥6388.00</span>
-                                <span>¥5199.00</span>
                                 <span>¥5199.00</span>
                             </p>
                             <p class="tab_JE">
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
+                                <a href="/static/search/#" th:utext="${product.skuTitle}">
                                     Apple iPhone 7 Plus (A1661) 32G 黑色 移动联通电信4G手机
-                                </a>
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
-                                    Apple iPhone 7 Plus (A1661) 32G 玫瑰金色 移动联通电信4G手机
-                                </a>
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
-                                    Apple iPhone 7 Plus (A1661) 32G 金色 移动联通电信4G手机
                                 </a>
                                 <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
                                     Apple iPhone 7 Plus 128G 红色特别版 移动联通电信4G手机
                                 </a>
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
-                                    Apple iPhone 7 Plus (A1661) 32G 亮黑色 移动联通电信4G手机
-                                </a>
-                                <a href="/static/search/#" title="购买AppleCare+，获得原厂2年整机保修(含电池)，和多达2次意外损坏的保修服务。购买勾选：保障服务、原厂保2年。">
-                                    Apple iPhone 7 Plus (A1661) 32G 银色 移动联通电信4G手机
-                                </a></p>
                             <p class="tab_PI">已有<span>11万+</span>热门评价
                                 <a href="/static/search/#">二手有售</a>
                             </p>
@@ -3542,14 +3490,81 @@
     })
 
     function searchProducts(name, value){
-        var href = location.href + "";
-        if(href.indexOf("?") != -1){
-            //原来的页面
-            location.href = location.href + "&" + name + "=" + value;
+        location.href = replaceAndAddParamVal(location.href, "keyword", value)
+    }
+    //searchByKeyword()
+    //.page_a.click(func)
+    //以上两个方法参考187:17:30
+    function replaceAndAddParamVal(url, paramName, replaceVal){
+        //如果没有就添加，有就替换
+        var oUrl = url.toString();
+
+        if(oUrl.indexOf(paramName) != -1){
+
+            var re = eval('/(' + paramName + '=)([^&]*)/gi');
+            var nUrl = oUrl.replace(re, paramName + '=' + replaceVal);
+            return nUrl;
         }else{
-            location.href = location.href + "?" + name + "=" + value;
+            var nUrl = "";
+            if(oUrl.indexOf("?") != -1){
+                //原来的页面
+                nUrl = oUrl + "&" + paramName + '=' + replaceVal;
+            }else{
+                nUrl = oUrl + "?" + paramName + '=' + replaceVal;
+            }
+
+            return nUrl;
         }
     }
+    $(".sort_a").click(function(){
+        //1、当前被点击的元素变为选中状态 -> 样式
+        changeStyle(this);
+        //禁用默认行为(a标签跳转)
+        //2、跳转到指定 位置
+        var sort = $(this).attr("sort");
+        sort = $(this).hasClass("desc") ? sort + "_desc" : sort + "_asc";
+        location.href = replaceAndAddParamVal(location.href, "sort", sort)
+        return false;
+    });
+    function changeStyle(ele){
+        $(".sort_a").css({"color":"#333","border-color":"#CCC", "background": "#FFF"});
+        $(".sort_a").each(function(){
+            var text = $(this).text().replace("⬇","").replace("⬆","");
+            $(this).text(text);
+        });
+        $(ele).css({"color":"#FFF","border-color":"#e4393c", "background": "#e4393c"})
+        //改变升降序
+        $(ele).toggleClass("desc");//加上降序，不加升序
+        if($(ele).hasClass("desc")){
+            //降
+            var text = $(ele).text().replace("⬇","").replace("⬆","");
+            text = text + "⬇";
+            $(ele).text(text);
+        }else{
+            text = text + "⬆";
+            $(ele).text(text);
+        }
+
+    }
+
+    $("#skuPriceSearchBtn").click(function () {
+        //1、拼上价格区间
+        var from = $("#skuPriceFrom").val();
+        var to = $("#skuPriceTo").val();
+
+        var query = from + "_" + to;
+        location.href = replaceAndAddParamVal(location.href, "skuPrice", query);
+    })
+
+    $("#showHasStock").change(function(){
+        if($(this).prop('checked')){
+            location.href = replaceAndAddParamVal(location.href, "hasStock", 1)
+        }else{
+            var re = eval('/(hasStock=)([^&]*)/gi');
+            location.href = (location.href+"").replace(re, '');
+        }
+        return false;
+    })
 </script>
 </body>
 </html>

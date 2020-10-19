@@ -20,8 +20,11 @@ import com.amazonaws.services.s3.transfer.Upload;
 import com.amazonaws.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jwang261.common.utils.PageUtils;
+import com.jwang261.onlineshop.product.dao.AttrGroupDao;
 import com.jwang261.onlineshop.product.entity.BrandEntity;
 import com.jwang261.onlineshop.product.service.BrandService;
+import com.jwang261.onlineshop.product.vo.SkuItemVo;
+import com.jwang261.onlineshop.product.vo.SpuItemAttrGroupVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +48,15 @@ class OnlineshopProductApplicationTests {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    AttrGroupDao attrGroupDao;
+
+    @Test
+    public void test(){
+        List<SpuItemAttrGroupVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(3L, 225L);
+        System.out.println(attrGroupWithAttrsBySpuId);
+    }
+
     @Test
     public void testStringRedisTemplate(){
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
@@ -55,4 +67,6 @@ class OnlineshopProductApplicationTests {
 
 
     }
+
+
 }
