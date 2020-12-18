@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.util.List;
 
+//检索条件，封装所有可能传递过来的查询条件
 /**
  * @author jwang261
  * @date 2020/9/6 3:19 PM

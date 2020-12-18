@@ -11,18 +11,22 @@ import java.util.List;
  */
 @Data
 public class SearchResultVo {
+    //查询到的商品信息
     private List<SkuEsModel> products;
 
     /**
-     * pageSplit
+     * pageSplit info
      */
     private Integer pageNum;//cur page
     private Long total;//total records
     private Integer totalPages;//total pageNum
 
-    private List<BrandVo> brands;
+    private List<BrandVo> brands;//当前查询结果所有涉及到的品牌
     private List<CatalogVo> catalogs;
     private List<AttrVo> attrs;
+
+
+    //以上是返回给页面的所有信息
 
     @Data
     public static class BrandVo{
@@ -30,7 +34,7 @@ public class SearchResultVo {
         private String brandName;
         private String brandImg;
     }
-    //TODO sj
+
     @Data
     public static class CatalogVo{
         private Long catalogId;

@@ -16,7 +16,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 @MapperScan("com.jwang261.onlineshop.product.dao")
 @SpringBootApplication
 @EnableDiscoveryClient
-
+//@EnableCaching
 public class OnlineshopProductApplication {
     public static void main(String[] args) {
         SpringApplication.run(OnlineshopProductApplication.class, args);

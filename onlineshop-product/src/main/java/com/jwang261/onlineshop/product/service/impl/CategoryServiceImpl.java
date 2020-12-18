@@ -96,18 +96,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     //缓存失效场景
     @Override
     @Transactional
+    //多个缓存操作，如果删除全部，可以用下面的allEntries代替
 //    @Caching(evict = {
 //            @CacheEvict(value = "category", key = "'getLevel1Categories'"),
 //            @CacheEvict(value = "category", key = "'getCatalogJson'")
 //    })
-    @CacheEvict(value = "category", allEntries = true)
+    @CacheEvict(value = "category", allEntries = true) //缓存失效模式：调用之后删除缓存
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
         categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
     }
 
     @Override
-    @Cacheable(value = {"category"}, key = "#root.method.name")
+    //sync 本地锁
+    @Cacheable(value = {"category"}, key = "#root.method.name", sync = true)
     public List<CategoryEntity> getLevel1Categories() {
         List<CategoryEntity> categoryEntities = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0L));
         return categoryEntities;

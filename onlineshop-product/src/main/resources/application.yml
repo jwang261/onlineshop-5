@@ -3,10 +3,11 @@ spring:
   cache:
     type: redis
     redis:
+      # TTL, lasting time, timeunit: ms
       time-to-live: 3600000
 #      key-prefix: CACHE_
       use-key-prefix: true
-      cache-null-values: true
+      cache-null-values: true #允许缓存null防止缓存穿透
   application:
     name: onlineshop-product
   datasource:

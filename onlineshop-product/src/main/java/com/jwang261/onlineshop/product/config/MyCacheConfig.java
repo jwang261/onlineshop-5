@@ -18,15 +18,18 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @EnableCaching
 @Configuration
+//开启属性配置的绑定功能
 @EnableConfigurationProperties(CacheProperties.class)
 public class MyCacheConfig {
 
+//    也可以在下面Bean方法中加入参数指定
 //    @Autowired
 //    CacheProperties cacheProperties;
 
     @Bean
     RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties){
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+        //序列化方式
         config = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
         config = config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
