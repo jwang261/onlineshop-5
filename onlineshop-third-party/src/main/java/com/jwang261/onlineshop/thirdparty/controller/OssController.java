@@ -49,8 +49,8 @@ public class OssController {
 
     public String upload(File tempFile, String remoteFileName) throws FileNotFoundException {
 
-        ACCESS_KEY_ID = "AKIAJ7AFYZVBWONSTZWA";
-        SECRET_ACCESS_KEY = "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";
+        ACCESS_KEY_ID = "";
+        SECRET_ACCESS_KEY = "";
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(ACCESS_KEY_ID, SECRET_ACCESS_KEY);
         s3Client = AmazonS3Client.builder()
                 .withRegion(REGION)
