@@ -6,6 +6,6 @@ package com.jwang261.onlineshop.search.constant;
  */
 public class EsConstant {
     public static final String PRODUCT_INDEX = "onlineshop5_product";//sku在es中的索引
-    public static final int PRODUCT_PAGESIZE = 10;
+    public static final Integer PRODUCT_PAGESIZE = 10;
 
 }

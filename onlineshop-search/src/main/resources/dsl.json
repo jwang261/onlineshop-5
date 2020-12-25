@@ -1,4 +1,4 @@
-
+//GET onlineshop5_product/_search
 {
   "query": {
     "bool": {

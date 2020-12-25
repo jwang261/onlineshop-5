@@ -28,14 +28,14 @@ import java.util.UUID;
 @RestController
 public class OssController {
     @Value("${my.s3.access}")
-    private String ACCESS_KEY_ID;
+    private String ACCESS_KEY_ID = "";
     @Value("${my.s3.secret}")
-    private String SECRET_ACCESS_KEY;
+    private String SECRET_ACCESS_KEY = "";
     private AmazonS3 s3Client;
     @Value("${my.s3.bucket}")
-    private String BUCKET_NAME = "onlineshop-5";
+    private String BUCKET_NAME = "";
     @Value("${my.s3.region}")
-    private String REGION;
+    private String REGION = "";
 
     private String path;
 
@@ -49,6 +49,8 @@ public class OssController {
 
     public String upload(File tempFile, String remoteFileName) throws FileNotFoundException {
 
+        ACCESS_KEY_ID = "AKIAJ7AFYZVBWONSTZWA";
+        SECRET_ACCESS_KEY = "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";
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(ACCESS_KEY_ID, SECRET_ACCESS_KEY);
         s3Client = AmazonS3Client.builder()
                 .withRegion(REGION)

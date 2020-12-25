@@ -24,7 +24,7 @@ public class SearchResultVo {
     private List<BrandVo> brands;//当前查询结果所有涉及到的品牌
     private List<CatalogVo> catalogs;
     private List<AttrVo> attrs;
-
+    private List<Integer> pageNavs;
 
     //以上是返回给页面的所有信息
 

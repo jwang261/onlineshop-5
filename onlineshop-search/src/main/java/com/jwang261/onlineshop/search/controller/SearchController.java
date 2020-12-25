@@ -25,7 +25,7 @@ public class SearchController {
      * @param param all params
      * @return
      */
-    @GetMapping("/list.html")
+    @GetMapping({"/list.html","/"})
     public String listPage(SearchParamVo param, Model model){
         SearchResultVo result = shopSearchService.search(param);
         model.addAttribute("result", result);

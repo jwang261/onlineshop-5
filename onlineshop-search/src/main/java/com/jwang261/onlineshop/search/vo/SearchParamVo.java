@@ -29,9 +29,9 @@ public class SearchParamVo {
      * hasStock, skuPrice range, brandId, catalog3Id, attrs
      * 0/1
      */
-    private Integer hasStock;
+    private Integer hasStock = 1;
     private String skuPrice;
     private List<Long> brandId;
     private List<String> attrs;
-    private Integer pageNum = 10;
+    private Integer pageNum = 1;
 }

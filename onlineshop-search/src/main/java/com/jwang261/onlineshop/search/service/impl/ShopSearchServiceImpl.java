@@ -21,6 +21,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
@@ -54,13 +55,17 @@ public class ShopSearchServiceImpl implements ShopSearchService {
 
     @Override
     public SearchResultVo search(SearchParamVo param) {
+        //动态构建查询需要的DSL语句
         SearchResultVo result = null;
+        //1、准备检索请求
         SearchRequest searchRequest = buildSearchRequest(param);
 
 
         try {
+            //2、执行检索请求
             SearchResponse response = client.search(searchRequest, OnlineshopElasticSearchConfig.COMMON_OPTIONS);
 
+            //3、封装检索结果
             result = buildSearchResult(response, param);
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,21 +80,26 @@ public class ShopSearchServiceImpl implements ShopSearchService {
         //1. return the products that matched the query
         SearchHits hits = response.getHits();
         List<SkuEsModel> esModels = new ArrayList<>();
+        SearchHit[] hits1 = hits.getHits();
         if(hits.getHits() != null && hits.getHits().length > 0){
             for (SearchHit hit : hits.getHits()) {
                 String sourceAsString = hit.getSourceAsString();
                 SkuEsModel esModel = JSON.parseObject(sourceAsString, SkuEsModel.class);
+                //set highlight
                 if(!StringUtils.isEmpty(param.getKeyword())){
                     HighlightField skuTitle = hit.getHighlightFields().get("skuTitle");
                     String string = skuTitle.fragments()[0].string();
                     esModel.setSkuTitle(string);
                 }
+
                 esModels.add(esModel);
             }
         }
         result.setProducts(esModels);
 
+        //2-4 from aggregation info
         //2. All the attrs that related to the products
+
         List<SearchResultVo.AttrVo> attrVos = new ArrayList<>();
         ParsedNested attr_agg = response.getAggregations().get("attr_agg");
         ParsedLongTerms attr_id_agg = attr_agg.getAggregations().get("attr_id_agg");
@@ -154,9 +164,15 @@ public class ShopSearchServiceImpl implements ShopSearchService {
         //5.1 total rows
         long total = hits.getTotalHits().value;
         result.setTotal(total);
-        //5.2 calculate
+        //5.2 calculate pageNums
         int totalPages = (int) total % EsConstant.PRODUCT_PAGESIZE == 0 ? (int) total / EsConstant.PRODUCT_PAGESIZE : (int) total / EsConstant.PRODUCT_PAGESIZE + 1;
         result.setTotalPages(totalPages);
+
+        List<Integer> pageNavs = new ArrayList<>();
+        for(int i = 1; i <= totalPages; i++){
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
         return result;
     }
 
@@ -177,11 +193,12 @@ public class ShopSearchServiceImpl implements ShopSearchService {
         //1.2 bool filter - brandId
         if(param.getBrandId() != null && param.getBrandId().size() > 0){
             boolQuery.filter(QueryBuilders.termsQuery("brandId", param.getBrandId()));
+
         }
         //1.2 bool filter - attrs
         if(param.getAttrs() != null && param.getAttrs().size() > 0){
 
-            //each attrStr should be a nestedQuery
+            //each attrStr should be a nested Query
             for (String attrStr : param.getAttrs()) {
                 BoolQueryBuilder nestedBoolQuery = QueryBuilders.boolQuery();
                 //attr = 1_8G:16G&2_13in:15in
@@ -190,7 +207,7 @@ public class ShopSearchServiceImpl implements ShopSearchService {
                 String[] attrValues = s[1].split(":");//[8G,16G]
                 nestedBoolQuery.must(QueryBuilders.termQuery("attrs.attrId", attrId));
                 nestedBoolQuery.must(QueryBuilders.termsQuery("attrs.attrValue", attrValues));
-                NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", null, ScoreMode.None);
+                NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", nestedBoolQuery, ScoreMode.None);
                 boolQuery.filter(nestedQuery);
             }
 
@@ -198,8 +215,9 @@ public class ShopSearchServiceImpl implements ShopSearchService {
 
         }
         //1.2 bool filter - stock >>>
+        //TODO 这里为了方便显示的全是无库存商品
         if(param.getHasStock() != null){
-            boolQuery.filter(QueryBuilders.termQuery("hasStock", param.getHasStock() == 1));
+            boolQuery.filter(QueryBuilders.termQuery("hasStock", param.getHasStock() == 0));
 
         }
 
