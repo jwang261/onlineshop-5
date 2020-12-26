@@ -34,4 +34,7 @@ public class SearchParamVo {
     private List<Long> brandId;
     private List<String> attrs;
     private Integer pageNum = 1;
+
+    //原查询数据
+    private String _queryString;
 }

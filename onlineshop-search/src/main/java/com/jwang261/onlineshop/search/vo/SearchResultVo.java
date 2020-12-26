@@ -3,6 +3,7 @@ package com.jwang261.onlineshop.search.vo;
 import com.jwang261.common.to.es.SkuEsModel;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,17 @@ public class SearchResultVo {
     private List<Integer> pageNavs;
 
     //以上是返回给页面的所有信息
+
+    //面包屑导航
+    private List<NavVo> navs = new ArrayList<>();
+    private List<Long> attrIds = new ArrayList<>();
+
+    @Data
+    public static class NavVo{
+        private String navName;
+        private String navValue;
+        private String link;
+    }
 
     @Data
     public static class BrandVo{

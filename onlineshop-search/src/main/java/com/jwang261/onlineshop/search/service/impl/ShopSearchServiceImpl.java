@@ -1,11 +1,16 @@
 package com.jwang261.onlineshop.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.jwang261.common.to.es.SkuEsModel;
 import com.jwang261.common.utils.Query;
+import com.jwang261.common.utils.R;
 import com.jwang261.onlineshop.search.config.OnlineshopElasticSearchConfig;
 import com.jwang261.onlineshop.search.constant.EsConstant;
+import com.jwang261.onlineshop.search.feign.ProductFeignService;
 import com.jwang261.onlineshop.search.service.ShopSearchService;
+import com.jwang261.onlineshop.search.vo.AttrResponseVo;
+import com.jwang261.onlineshop.search.vo.BrandVo;
 import com.jwang261.onlineshop.search.vo.SearchParamVo;
 import com.jwang261.onlineshop.search.vo.SearchResultVo;
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +43,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +59,8 @@ public class ShopSearchServiceImpl implements ShopSearchService {
     @Autowired
     RestHighLevelClient client;
 
+    @Autowired
+    ProductFeignService productFeignService;
 
     @Override
     public SearchResultVo search(SearchParamVo param) {
@@ -97,6 +106,8 @@ public class ShopSearchServiceImpl implements ShopSearchService {
         }
         result.setProducts(esModels);
 
+
+
         //2-4 from aggregation info
         //2. All the attrs that related to the products
 
@@ -117,6 +128,8 @@ public class ShopSearchServiceImpl implements ShopSearchService {
             attrVo.setAttrId(attrId);
             attrVo.setAttrName(attrName);
             attrVo.setAttrValue(attrValues);
+
+
             attrVos.add(attrVo);
         }
         result.setAttrs(attrVos);
@@ -173,7 +186,74 @@ public class ShopSearchServiceImpl implements ShopSearchService {
             pageNavs.add(i);
         }
         result.setPageNavs(pageNavs);
+
+        //6. build navVos
+        if(param.getAttrs() != null && param.getAttrs().size() > 0) {
+            List<SearchResultVo.NavVo> collect = param.getAttrs().stream().map(attr -> {
+                //1.分析每个attrs传过来的查询参数值
+                SearchResultVo.NavVo navVo = new SearchResultVo.NavVo();
+                String[] s = attr.split("_");
+                navVo.setNavValue(s[1]);
+                R r = productFeignService.attrInfo(Long.parseLong(s[0]));
+                result.getAttrIds().add(Long.parseLong(s[0]));
+                if (r.getCode() == 0) {
+                    AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>() {
+                    });
+                    navVo.setNavName(data.getAttrName());
+                } else {
+                    navVo.setNavName(s[0]);
+                }
+
+                //2.取消面包屑以后我们要跳转的地方，将请求地址的url里的参数删除
+                //拿到所有的查询条件，去掉当前
+                String replace = replaceQueryString(param, attr,"attrs");
+
+                navVo.setLink("http://search.jwang261-shop.com/list.html?" + replace);
+
+                return navVo;
+            }).collect(Collectors.toList());
+
+            result.setNavs(collect);
+        }
+
+        //品牌，分类
+        if(param.getBrandId() != null && param.getBrandId().size() > 0){
+            List<SearchResultVo.NavVo> navs = result.getNavs();
+            SearchResultVo.NavVo navVo = new SearchResultVo.NavVo();
+
+            navVo.setNavName("品牌");
+
+            R r = productFeignService.brandsInfo(param.getBrandId());
+            if(r.getCode() == 0){
+                List<BrandVo> brand = r.getData("brand", new TypeReference<List<BrandVo>>() {
+                });
+                StringBuffer buffer = new StringBuffer();
+                String replace = "";
+                for (BrandVo brandVo : brand) {
+                    buffer.append(brandVo.getBrandName()+";");
+                    replace = replaceQueryString(param, brandVo.getBrandId()+"","brandId");
+                }
+                navVo.setNavValue(buffer.toString());
+                navVo.setLink("http://search.jwang261-shop.com/list.html?" + replace);
+
+            }
+
+            navs.add(navVo);
+        }
+        //TODO 分类，不需要取消
+
         return result;
+    }
+
+    private String replaceQueryString(SearchParamVo param, String value, String key) {
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value, "UTF-8");
+            encode.replace("+", "%20");//浏览器对空格编码和java不同
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return param.get_queryString().replace("&" + key + "=" + encode, "");
     }
 
 

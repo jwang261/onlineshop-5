@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author jwang261
  * @date 2020/9/6 2:53 PM
@@ -26,7 +28,9 @@ public class SearchController {
      * @return
      */
     @GetMapping({"/list.html","/"})
-    public String listPage(SearchParamVo param, Model model){
+    public String listPage(SearchParamVo param, Model model, HttpServletRequest request){
+
+        param.set_queryString(request.getQueryString());
         SearchResultVo result = shopSearchService.search(param);
         model.addAttribute("result", result);
         return "list";
