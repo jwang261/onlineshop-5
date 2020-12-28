@@ -1,4 +1,5 @@
 
+
 spring:
   cache:
     type: redis
@@ -42,3 +43,8 @@ server:
 logging:
   level:
     com.jwang261.onlineshop: error
+onlineshop5:
+  thread:
+    core-size: 10
+    max-size: 100
+    keep-alive-time: 10

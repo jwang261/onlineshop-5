@@ -2,12 +2,10 @@ package com.jwang261.onlineshop.product.service.impl;
 
 import com.jwang261.onlineshop.product.entity.SkuImagesEntity;
 import com.jwang261.onlineshop.product.entity.SpuInfoDescEntity;
-import com.jwang261.onlineshop.product.service.AttrGroupService;
-import com.jwang261.onlineshop.product.service.SkuImagesService;
-import com.jwang261.onlineshop.product.service.SpuInfoDescService;
+import com.jwang261.onlineshop.product.service.*;
+import com.jwang261.onlineshop.product.vo.SkuItemSaleAttrVo;
 import com.jwang261.onlineshop.product.vo.SkuItemVo;
 import com.jwang261.onlineshop.product.vo.SpuItemAttrGroupVo;
-import com.sun.org.apache.bcel.internal.generic.UnconditionalBranch;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +13,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,7 +25,6 @@ import com.jwang261.common.utils.Query;
 
 import com.jwang261.onlineshop.product.dao.SkuInfoDao;
 import com.jwang261.onlineshop.product.entity.SkuInfoEntity;
-import com.jwang261.onlineshop.product.service.SkuInfoService;
 
 
 @Service("skuInfoService")
@@ -36,7 +37,10 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     SpuInfoDescService spuInfoDescService;
     @Autowired
     AttrGroupService attrGroupService;
-
+    @Autowired
+    SkuSaleAttrValueService skuSaleAttrValueService;
+    @Autowired
+    ThreadPoolExecutor executor;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -107,30 +111,48 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     }
 
 
-    //TODO c.205 needs override from interface
-    //@Override
-    public SkuItemVo item(Long skuId){
+
+    @Override
+    public SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException {
         SkuItemVo skuItemVo = new SkuItemVo();
-        //1. 基本信息获取 pms_sku_info
-        SkuInfoEntity info = getById(skuId);
-        Long catalogId = info.getCatalogId();
-        Long spuId = info.getSpuId();
-        skuItemVo.setInfo(info);
+        CompletableFuture<SkuInfoEntity> infoFuture = CompletableFuture.supplyAsync(() -> {
+            //1. 基本信息获取 pms_sku_info
+            SkuInfoEntity info = getById(skuId);
+            skuItemVo.setInfo(info);
+            return info;
+        }, executor);
+
+        CompletableFuture<Void> imageFuture = CompletableFuture.runAsync(() -> {
+            //2. sku图片信息 pms_sku_images
+            List<SkuImagesEntity> images = imagesService.getImagesBySkuId(skuId);
+            skuItemVo.setImages(images);
+        }, executor);
 
 
-        //2. sku图片信息 pms_sku_images
-        List<SkuImagesEntity> images =  imagesService.getImagesBySkuId(skuId);
-        skuItemVo.setImages(images);
-        //3. 获取spu的销售属性组合
+        CompletableFuture<Void> saleAttrFuture = infoFuture.thenAcceptAsync((res) -> {
+            //3. 获取spu的销售属性组合
+            List<SkuItemSaleAttrVo> saleAttrVos = skuSaleAttrValueService.getSaleAttrsBySpuId(res.getSpuId());
+            skuItemVo.setSaleAttr(saleAttrVos);
+        }, executor);
 
-        //4. 获取spu的介绍
+        CompletableFuture<Void> descFuture = infoFuture.thenAcceptAsync((res) -> {
+            //4. 获取spu的介绍
+            SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(res.getSpuId());
+            skuItemVo.setDesp(spuInfoDescEntity);
+        }, executor);
 
-        SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(spuId);
-        skuItemVo.setDesp(spuInfoDescEntity);
-//        spuInfoDescEntity.getDecript()
-        //5. 获取spu的规格参数信息
-        List<SpuItemAttrGroupVo> attrGroupVos = attrGroupService.getAttrGroupWithAttrsBySpuId(spuId, catalogId);
-        skuItemVo.setGroupAttrs(attrGroupVos);
-        return null;
+        CompletableFuture<Void> baseAttrFuture = infoFuture.thenAcceptAsync((res) -> {
+            //5. 获取spu的规格参数信息
+            List<SpuItemAttrGroupVo> attrGroupVos = attrGroupService.getAttrGroupWithAttrsBySpuId(res.getSpuId(), res.getCatalogId());
+            skuItemVo.setGroupAttrs(attrGroupVos);
+        }, executor);
+
+
+        //等待所有任务都完成
+
+        CompletableFuture.allOf(saleAttrFuture, descFuture, imageFuture, baseAttrFuture).get();
+
+
+        return skuItemVo;
     }
 }

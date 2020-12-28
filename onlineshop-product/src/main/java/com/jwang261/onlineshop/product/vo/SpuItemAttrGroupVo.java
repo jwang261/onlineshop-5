@@ -7,11 +7,11 @@ import java.util.List;
 
 /**
  * @author jwang261
- * @date 2020/10/18 10:08 PM
+ * @date 2020/12/26 5:42 AM
  */
 @Data
 @ToString
-public class SpuItemAttrGroupVo {
+public class SpuItemAttrGroupVo{
     private String groupName;
     private List<Attr> attrs;
 }

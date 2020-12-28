@@ -26,13 +26,16 @@ public class SkuItemVo {
     //3.获取spu的销售属性组合
     List<SkuItemSaleAttrVo> saleAttr;
 
-    //c.205遗留下的空白，貌似已经补齐基本的属性和方法
-
     //4.获取spu的介绍
     SpuInfoDescEntity desp;
 
     //5.获取spu的规格参数信息
     List<SpuItemAttrGroupVo> groupAttrs;
+
+
+
+
+
 
 
 }
