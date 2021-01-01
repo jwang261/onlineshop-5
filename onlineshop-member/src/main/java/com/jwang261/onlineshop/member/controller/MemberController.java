@@ -3,20 +3,20 @@ package com.jwang261.onlineshop.member.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.jwang261.common.exception.BizCodeEnum;
+import com.jwang261.onlineshop.member.exception.PhoneExistException;
+import com.jwang261.onlineshop.member.exception.UsernameExistException;
 import com.jwang261.onlineshop.member.feign.CouponFeignService;
+import com.jwang261.onlineshop.member.vo.MemberLoginVo;
+import com.jwang261.onlineshop.member.vo.MemberRegisterVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.jwang261.onlineshop.member.entity.MemberEntity;
 import com.jwang261.onlineshop.member.service.MemberService;
 import com.jwang261.common.utils.PageUtils;
 import com.jwang261.common.utils.R;
-
 
 
 /**
@@ -36,8 +36,34 @@ public class MemberController {
     @Autowired
     private CouponFeignService couponFeignService;
 
+    @PostMapping("login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        MemberEntity entity = memberService.login(vo);
+        if (entity != null) {
+            return R.ok();
+        }else{
+
+            return R.error(BizCodeEnum.LOGIN_ACCT_PWD_INVALID_EXCEPTION.getCode(),BizCodeEnum.LOGIN_ACCT_PWD_INVALID_EXCEPTION.getMsg());
+        }
+
+    }
+
+    @PostMapping("/register")
+    public R register(@RequestBody MemberRegisterVo vo) {
+
+        try {
+            memberService.register(vo);
+        } catch (PhoneExistException e) {
+            return R.error(BizCodeEnum.PHONE_EXIST_EXCEPTION.getCode(), BizCodeEnum.PHONE_EXIST_EXCEPTION.getMsg());
+        } catch (UsernameExistException e) {
+            return R.error(BizCodeEnum.USER_EXIST_EXCEPTION.getCode(), BizCodeEnum.USER_EXIST_EXCEPTION.getMsg());
+
+        }
+        return R.ok();
+    }
+
     @RequestMapping("/coupons")
-    public R test(){
+    public R test() {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setNickname("JackeyLove");
         R memberCoupons = couponFeignService.memberCoupons();
@@ -49,7 +75,7 @@ public class MemberController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
 
         PageUtils page = memberService.queryPage(params);
 
@@ -61,8 +87,8 @@ public class MemberController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		MemberEntity member = memberService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        MemberEntity member = memberService.getById(id);
 
         return R.ok().put("member", member);
     }
@@ -71,8 +97,8 @@ public class MemberController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody MemberEntity member){
-		memberService.save(member);
+    public R save(@RequestBody MemberEntity member) {
+        memberService.save(member);
 
         return R.ok();
     }
@@ -81,8 +107,8 @@ public class MemberController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody MemberEntity member){
-		memberService.updateById(member);
+    public R update(@RequestBody MemberEntity member) {
+        memberService.updateById(member);
 
         return R.ok();
     }
@@ -91,8 +117,8 @@ public class MemberController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		memberService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        memberService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
