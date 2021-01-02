@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * @author jwang261
@@ -16,6 +17,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 @MapperScan("com.jwang261.onlineshop.product.dao")
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableRedisHttpSession
 //@EnableCaching
 public class OnlineshopProductApplication {
     public static void main(String[] args) {

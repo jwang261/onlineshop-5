@@ -2,6 +2,7 @@ package com.jwang261.onlineshop.auth.controller;
 
 import com.alibaba.fastjson.TypeReference;
 import com.jwang261.common.utils.R;
+import com.jwang261.common.vo.MemberRespVo;
 import com.jwang261.onlineshop.auth.feign.MemberFeignService;
 import com.jwang261.onlineshop.auth.vo.UserLoginVo;
 import com.jwang261.onlineshop.auth.vo.UserRegisterVo;
@@ -12,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,10 +77,15 @@ public class LoginController {
 
     }
     @PostMapping("/login")
-    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes){
+    public String login(UserLoginVo vo,
+                        RedirectAttributes redirectAttributes,
+                        HttpSession session){
         R login = memberFeignService.login(vo);
         if(login.getCode()==0){
 
+            MemberRespVo data = login.getData("data", new TypeReference<MemberRespVo>() {
+            });
+            session.setAttribute("loginUser",data);
             return "redirect:http://jwang261-shop.com";
         }else{
             Map<String,String> errors = new HashMap<>();

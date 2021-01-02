@@ -10,6 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @author jwang261
  * @date 2020/8/20 7:15 PM
  */
+
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = "com.jwang261.onlineshop.member.feign")
