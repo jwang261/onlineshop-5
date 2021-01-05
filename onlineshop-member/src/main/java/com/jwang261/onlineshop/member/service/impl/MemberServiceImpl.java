@@ -51,7 +51,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
         entity.setMobile(vo.getPhone());
         entity.setUsername(vo.getUsername());
-
+        entity.setNickname(vo.getUsername());
 
         //加密 - md5盐值加密
 //        Md5Crypt.md5Crypt("123456".getBytes());

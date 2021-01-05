@@ -65,6 +65,10 @@ spring:
           uri: lb://onlineshop-auth-server
           predicates:
             - Host=auth.jwang261-shop.com
+        - id: onlineshop_cart_route
+          uri: lb://onlineshop-cart
+          predicates:
+            - Host=cart.jwang261-shop.com
 
 #        - id: test_route
 #          uri: https://www.baidu.com
