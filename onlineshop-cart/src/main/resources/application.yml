@@ -1,0 +1,6 @@
+onlineshop5:
+  thread:
+    core-size: 10
+    max-size: 100
+    keep-alive-time: 10
+
