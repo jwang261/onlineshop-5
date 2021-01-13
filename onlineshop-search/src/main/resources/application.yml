@@ -1,4 +1,4 @@
-spring:
+ spring:
   thymeleaf:
     cache: false
   application:
@@ -9,3 +9,4 @@ spring:
         server-addr: 127.0.0.1:8848
 server:
   port: 12000
+
