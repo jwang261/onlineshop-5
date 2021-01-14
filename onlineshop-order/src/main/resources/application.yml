@@ -15,6 +15,13 @@ spring:
     host: 127.0.0.1
     port: 5672
     virtual-host: /
+    publisher-confirms: true #publisher -> exchange confirm
+    publisher-returns: true #exchange -> queue confirm
+    template:
+      mandatory: true #只要抵达队列，以异步方式优先回调returns
+    listener:
+      direct:
+        acknowledge-mode: manual #设置手动处理消息模式
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
