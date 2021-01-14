@@ -22,6 +22,8 @@ spring:
     listener:
       direct:
         acknowledge-mode: manual #设置手动处理消息模式
+  thymeleaf:
+    cache: false
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
