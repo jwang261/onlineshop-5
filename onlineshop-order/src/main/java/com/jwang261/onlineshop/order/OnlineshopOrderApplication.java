@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableRabbit
+@EnableFeignClients
 @MapperScan("com.jwang261.onlineshop.order.dao")
 //本地事务本类方法互调代理失效问题解决：
 @EnableAspectJAutoProxy(exposeProxy = true)//动态代理，对外暴露代理对象

@@ -1,14 +1,11 @@
 package com.jwang261.onlineshop.product.app;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.jwang261.onlineshop.product.entity.SkuInfoEntity;
 import com.jwang261.onlineshop.product.service.SkuInfoService;
@@ -29,6 +26,13 @@ import com.jwang261.common.utils.R;
 public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
+
+    @GetMapping("/{skuId}/price")
+    public R getPrice(@PathVariable("skuId") Long skuId){
+        SkuInfoEntity byId = skuInfoService.getById(skuId);
+
+        return R.ok().setData(byId.getPrice().toString());
+    }
 
     /**
      * 列表

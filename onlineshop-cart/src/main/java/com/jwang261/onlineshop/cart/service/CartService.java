@@ -3,6 +3,7 @@ package com.jwang261.onlineshop.cart.service;
 import com.jwang261.onlineshop.cart.vo.Cart;
 import com.jwang261.onlineshop.cart.vo.CartItem;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -31,4 +32,6 @@ public interface CartService {
 
     //删除购物项
     void deleteItem(Long skuId);
+
+    List<CartItem> getUserCartItems();
 }
