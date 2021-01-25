@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jwang261
@@ -24,6 +25,9 @@ public class OrderConfirmVo {
 
     //Coupon信息
     Integer integration;
+
+    @Setter @Getter
+    Map<Long,Boolean> stocks;
 
     @Setter @Getter    //防重
     String orderToken;

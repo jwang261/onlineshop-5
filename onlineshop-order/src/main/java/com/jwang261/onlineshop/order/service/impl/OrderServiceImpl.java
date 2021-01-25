@@ -1,12 +1,16 @@
 package com.jwang261.onlineshop.order.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
+import com.jwang261.common.utils.R;
 import com.jwang261.common.vo.MemberRespVo;
 import com.jwang261.onlineshop.order.feign.CartFeignService;
 import com.jwang261.onlineshop.order.feign.MemberFeignService;
+import com.jwang261.onlineshop.order.feign.WmsFeignService;
 import com.jwang261.onlineshop.order.intercepter.LoginUserInterceptor;
 import com.jwang261.onlineshop.order.vo.MemberAddressVo;
 import com.jwang261.onlineshop.order.vo.OrderConfirmVo;
 import com.jwang261.onlineshop.order.vo.OrderItemVo;
+import com.jwang261.onlineshop.order.vo.SkuStockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -37,6 +42,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     CartFeignService cartFeignService;
+
+    @Autowired
+    WmsFeignService wmsFeignService;
 
     @Autowired
     ThreadPoolExecutor executor;
@@ -71,7 +79,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             System.out.println(currentUserCartItems);
             confirmVo.setItems(currentUserCartItems);
 
-        },executor);
+        },executor)/**.thenRunAsync(()->{
+            List<OrderItemVo> items = confirmVo.getItems();
+            List<Long> collect = items.stream().map(item -> item.getSkuId()).collect(Collectors.toList());
+            R skusHasStock = wmsFeignService.getSkusHasStock(collect);
+            List<SkuStockVo> data = skusHasStock.getData(new TypeReference<List<SkuStockVo>>() {
+            });
+            if(data!=null){
+                Map<Long, Boolean> map = data.stream().collect(Collectors.toMap(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
+                confirmVo.setStocks(map);
+
+            }
+        },executor)**/;
         //feign在远程调用之前要构造请求，创建了一个新的请求模板，用的模板默认没有任何额外信息,见MyFeignConfig
         //
         //3.积分

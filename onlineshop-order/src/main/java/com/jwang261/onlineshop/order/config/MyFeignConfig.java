@@ -23,18 +23,20 @@ public class MyFeignConfig {
             public void apply(RequestTemplate template) {
                 //This method is actually base on ThreadLocal, so we can also use ThreadLocal to get Info
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-                //Old request
-                HttpServletRequest request = attributes.getRequest();
+                if(attributes != null){
+                    //Old request
+                    HttpServletRequest request = attributes.getRequest();
+                    if(request != null){
+                        //Get cookies
+                        String cookie = request.getHeader("Cookie");
+                        //set new request
+                        template.header("Cookie",cookie);
 
-                if(request != null){
-                    //Get cookies
-                    String cookie = request.getHeader("Cookie");
-                    //set new request
-                    template.header("Cookie",cookie);
-
-                }else{
-                    System.out.println("request is null!");
+                    }else{
+                        System.out.println("request is null!");
+                    }
                 }
+
             }
         };
     }
