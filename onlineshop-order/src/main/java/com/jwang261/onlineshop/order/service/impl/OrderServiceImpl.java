@@ -79,7 +79,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             System.out.println(currentUserCartItems);
             confirmVo.setItems(currentUserCartItems);
 
-        },executor)/**.thenRunAsync(()->{
+        },executor).thenRunAsync(()->{
             List<OrderItemVo> items = confirmVo.getItems();
             List<Long> collect = items.stream().map(item -> item.getSkuId()).collect(Collectors.toList());
             R skusHasStock = wmsFeignService.getSkusHasStock(collect);
@@ -88,9 +88,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             if(data!=null){
                 Map<Long, Boolean> map = data.stream().collect(Collectors.toMap(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
                 confirmVo.setStocks(map);
-
+                //System.out.println(map);
             }
-        },executor)**/;
+        },executor);
         //feign在远程调用之前要构造请求，创建了一个新的请求模板，用的模板默认没有任何额外信息,见MyFeignConfig
         //
         //3.积分

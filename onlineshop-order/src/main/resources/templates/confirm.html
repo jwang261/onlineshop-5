@@ -664,7 +664,11 @@
 				<div class="yun1"  th:each="item:${confirmData.items}">
 					<img style="width: 150px; height: 150px" th:src="${item.image}" class="yun"/>
 					<div class="mi">
-						<!--						<p>[[${item.title}]]<span style="color: red;">$[[${#numbers.formatDecimal(item.price,1,2)}]]</span> <span>[[${item.count}]]</span> <span>[[${confirmData.stocks.get(item.skuId)?"有货":"无货"}]]</span></p>-->
+												<p>[[${item.title}]]
+													<span style="color: red;">$[[${#numbers.formatDecimal(item.price,1,2)}]]</span>
+													<span>[[${item.count}]]</span>
+													<span>[[${confirmData.stocks[item.skuId]?"有货":"无货"}]]</span>
+												</p>
 
 						<p><span>0.095kg</span></p>
 						<p class="tui-1">支持7天无理由退货</p>
@@ -728,7 +732,7 @@
 			</div>
 
 			<div class="yfze">
-				<p class="yfze_a"><span class="z">应付总额：</span><span class="hq">$[[${#numbers.formatDecimal(${confirmData.payPrice},1,2)}]]</span></p>
+				<p class="yfze_a"><span class="z">应付总额：</span><span class="hq">$ [[${#numbers.formatDecimal(confirmData.payPrice,1,2)}]]</span></p>
 				<p class="yfze_b">寄送至：收货人：赵存权 188****5052</p>
 			</div>
 			<button class="tijiao">提交订单</button>
